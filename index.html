@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Garmin Training - Louis Moret</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<style>
+:root{
+  --bg:#0a0e1a;
+  --bg-2:#0f1421;
+  --card:#131826;
+  --card-2:#1a2030;
+  --border:#1f2937;
+  --border-2:#252e44;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --dim:#6b7280;
+  --run:#10b981;
+  --bike:#3b82f6;
+  --swim:#06b6d4;
+  --strength:#fbbf24;
+  --other:#a78bfa;
+  --danger:#ef4444;
+  --warn:#f59e0b;
+  --ok:#22c55e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,system-ui,sans-serif;font-size:14px;line-height:1.5}
+a{color:inherit}
+.wrap{max-width:1480px;margin:0 auto;padding:28px 28px 80px}
+header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:28px;flex-wrap:wrap;gap:20px}
+header h1{font-size:24px;font-weight:700;margin:0 0 6px;letter-spacing:-.02em}
+header .sub{color:var(--muted);font-size:13px}
+header .meta{font-size:12px;color:var(--dim);text-align:right}
+header .meta strong{color:var(--text);font-size:13px}
+
+.section-title{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:28px 0 14px;display:flex;align-items:center;gap:10px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.grid{display:grid;gap:14px}
+.grid.kpi{grid-template-columns:repeat(6,1fr)}
+.grid.goals{grid-template-columns:repeat(4,1fr)}
+.grid.cols-2{grid-template-columns:1fr 1fr}
+.grid.cols-3{grid-template-columns:1fr 1fr 1fr}
+.grid.cols-2-1{grid-template-columns:2fr 1fr}
+
+@media (max-width:1100px){
+  .grid.kpi{grid-template-columns:repeat(3,1fr)}
+  .grid.goals{grid-template-columns:repeat(2,1fr)}
+  .grid.cols-2,.grid.cols-3,.grid.cols-2-1{grid-template-columns:1fr}
+}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.card h3{margin:0 0 14px;font-size:13px;font-weight:600;color:var(--text);letter-spacing:.01em}
+.card h3 .hint{color:var(--dim);font-weight:400;font-size:11px;margin-left:6px}
+
+.kpi-card{padding:16px 18px}
+.kpi-card .label{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:6px}
+.kpi-card .value{font-size:26px;font-weight:700;line-height:1;letter-spacing:-.02em}
+.kpi-card .value small{font-size:13px;color:var(--muted);font-weight:500;margin-left:3px}
+.kpi-card .delta{margin-top:6px;font-size:11.5px;color:var(--dim)}
+.kpi-card .delta.up{color:var(--ok)}
+.kpi-card .delta.down{color:var(--danger)}
+
+.goal-card{position:relative;overflow:hidden}
+.goal-card .name{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.goal-card .target{margin-top:6px;font-size:22px;font-weight:700;letter-spacing:-.02em}
+.goal-card .pace{color:var(--muted);font-size:12.5px;margin-top:4px}
+.goal-card .countdown{position:absolute;top:14px;right:18px;font-size:11px;color:var(--dim);text-align:right}
+.goal-card .countdown strong{display:block;font-size:22px;color:var(--text);font-weight:700;line-height:1;letter-spacing:-.02em}
+.goal-card .countdown.urgent strong{color:var(--warn)}
+.goal-card .countdown.imminent strong{color:var(--danger)}
+.goal-card .bar{margin-top:14px;height:4px;background:var(--border);border-radius:99px;overflow:hidden}
+.goal-card .bar span{display:block;height:100%;background:linear-gradient(90deg,var(--run),#34d399);border-radius:99px}
+
+.chart-wrap{position:relative;height:280px}
+.chart-wrap.tall{height:340px}
+.chart-wrap.short{height:200px}
+
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+table th,table td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+table th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+table tr:last-child td{border-bottom:none}
+table td.num{font-variant-numeric:tabular-nums;text-align:right}
+table th.num{text-align:right}
+
+.pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10.5px;font-weight:600;letter-spacing:.02em;text-transform:uppercase}
+.pill.run{background:rgba(16,185,129,.15);color:var(--run)}
+.pill.bike{background:rgba(59,130,246,.15);color:var(--bike)}
+.pill.swim{background:rgba(6,182,212,.15);color:var(--swim)}
+.pill.strength{background:rgba(251,191,36,.15);color:var(--strength)}
+.pill.other{background:rgba(167,139,250,.15);color:var(--other)}
+.pill.balanced{background:rgba(34,197,94,.15);color:var(--ok)}
+.pill.unbalanced{background:rgba(245,158,11,.15);color:var(--warn)}
+.pill.low{background:rgba(239,68,68,.15);color:var(--danger)}
+
+.scroll{max-height:420px;overflow-y:auto}
+.scroll::-webkit-scrollbar{width:6px}
+.scroll::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:99px}
+
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+.zone-table td{padding:8px 10px}
+.zone-table .zone-name{font-weight:600}
+.zone-table .zone-pace{font-variant-numeric:tabular-nums;color:var(--text)}
+.zone-table .zone-hr{color:var(--muted)}
+
+.hint-box{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
+.empty{padding:40px;text-align:center;color:var(--dim);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>Garmin Training - Louis Moret</h1>
+      <div class="sub">Triathlon - prep semi 31/05/2026 puis marathon Lille 25/10/2026</div>
+    </div>
+    <div class="meta">
+      Donnees Supabase - <strong id="generated"></strong><br/>
+      Fenetre : <strong id="window"></strong>
+    </div>
+  </header>
+
+  <!-- KPIs 14j -->
+  <div class="section-title">Indicateurs - 14 derniers jours</div>
+  <div class="grid kpi" id="kpi-row"></div>
+
+  <!-- Objectifs courses -->
+  <div class="section-title">Objectifs courses</div>
+  <div class="grid goals" id="goals-row"></div>
+
+  <!-- Volume / Charge -->
+  <div class="section-title">Volume et charge</div>
+  <div class="grid cols-2-1">
+    <div class="card">
+      <h3>Volume hebdomadaire par discipline <span class="hint">8 dernieres semaines (km pour run/bike, hm pour swim, h pour muscu)</span></h3>
+      <div class="chart-wrap"><canvas id="ch-volume"></canvas></div>
+      <div class="legend">
+        <span><i style="background:var(--run)"></i>Course</span>
+        <span><i style="background:var(--bike)"></i>Velo (entrainement, &gt; 10 km)</span>
+        <span><i style="background:var(--swim)"></i>Nat</span>
+        <span><i style="background:var(--strength)"></i>Muscu</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Repartition seances <span class="hint">30 derniers jours</span></h3>
+      <div class="chart-wrap"><canvas id="ch-donut"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid cols-2" style="margin-top:14px">
+    <div class="card">
+      <h3>Charge d'entrainement cumulee <span class="hint">30 derniers jours, rolling 7j</span></h3>
+      <div class="chart-wrap"><canvas id="ch-load"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Allure course par seance <span class="hint">course uniquement, derniers 60j</span></h3>
+      <div class="chart-wrap"><canvas id="ch-pace"></canvas></div>
+      <div class="legend">
+        <span><i style="background:var(--run)"></i>Endurance</span>
+        <span><i style="background:#f59e0b"></i>Tempo/Seuil</span>
+        <span><i style="background:#ef4444"></i>VMA / specifique</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recup -->
+  <div class="section-title">Recuperation et bien-etre</div>
+  <div class="grid cols-2">
+    <div class="card">
+      <h3>Readiness <span class="hint">score Garmin 0-100, 30j</span></h3>
+      <div class="chart-wrap"><canvas id="ch-readiness"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>FC repos & HRV <span class="hint">30j</span></h3>
+      <div class="chart-wrap"><canvas id="ch-rhr"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid cols-2" style="margin-top:14px">
+    <div class="card">
+      <h3>Body Battery <span class="hint">pic / creux quotidien, 30j</span></h3>
+      <div class="chart-wrap"><canvas id="ch-bb"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Sommeil <span class="hint">duree + score, 30j</span></h3>
+      <div class="chart-wrap"><canvas id="ch-sleep"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid cols-2" style="margin-top:14px">
+    <div class="card">
+      <h3>Stress moyen <span class="hint">0-100, 30j</span></h3>
+      <div class="chart-wrap short"><canvas id="ch-stress"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Statut HRV <span class="hint">30 derniers jours</span></h3>
+      <div id="hrv-status"></div>
+    </div>
+  </div>
+
+  <!-- Tableaux -->
+  <div class="section-title">Derniere quinzaine</div>
+  <div class="grid cols-2-1">
+    <div class="card">
+      <h3>Activites recentes</h3>
+      <div class="scroll">
+        <table id="tbl-activities">
+          <thead>
+            <tr>
+              <th>Date</th><th>Sport</th><th>Titre</th>
+              <th class="num">Dist.</th><th class="num">Duree</th>
+              <th class="num">Allure / Vit.</th><th class="num">FC moy</th>
+              <th class="num">Charge</th><th class="num">TE</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Zones d'allures cibles <span class="hint">calees sur semi 1h30</span></h3>
+      <table class="zone-table" id="tbl-zones">
+        <thead>
+          <tr><th>Type</th><th class="num">Pace /km</th><th class="num">FC</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const FMT = {
+  km: (m) => m == null ? '-' : (m/1000).toFixed(1) + ' km',
+  m:  (m) => m == null ? '-' : Math.round(m) + ' m',
+  dur:(s) => {
+    if(s==null) return '-';
+    const h=Math.floor(s/3600), mn=Math.floor((s%3600)/60), sec=Math.round(s%60);
+    return h>0 ? `${h}h${String(mn).padStart(2,'0')}` : `${mn}:${String(sec).padStart(2,'0')}`;
+  },
+  pace:(secKm) => {
+    if(secKm==null || !isFinite(secKm)) return '-';
+    const mn=Math.floor(secKm/60), s=Math.round(secKm%60);
+    return `${mn}:${String(s).padStart(2,'0')}`;
+  },
+  speed:(kmh) => kmh==null ? '-' : kmh.toFixed(1)+' km/h',
+  date:(s) => {
+    if(!s) return '-';
+    const d=new Date(s);
+    return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'});
+  },
+};
+
+function sportBucket(a){
+  const t = (a.sport_type || a.activity_type || '').toLowerCase();
+  if(t.includes('run')) return 'run';
+  if(t.includes('cycl') || t.includes('bike') || t.includes('velo')) return 'bike';
+  if(t.includes('swim') || t.includes('nat')) return 'swim';
+  if(t.includes('strength') || t.includes('muscu') || t.includes('weight') || t.includes('training_other') || t.includes('mobility') || t.includes('yoga') || t.includes('pilates')) return 'strength';
+  return 'other';
+}
+
+function isCyclingTrip(a){
+  return sportBucket(a) === 'bike' && (a.distance_meters || 0) < 10000;
+}
+
+function isoWeek(d){
+  const dt = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const dayNum = dt.getUTCDay() || 7;
+  dt.setUTCDate(dt.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(dt.getUTCFullYear(),0,1));
+  const weekNo = Math.ceil((((dt - yearStart) / 86400000) + 1)/7);
+  return `${dt.getUTCFullYear()}-W${String(weekNo).padStart(2,'0')}`;
+}
+
+function weekLabel(monday){
+  return monday.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'});
+}
+
+function startOfWeek(d){
+  const x = new Date(d);
+  const dow = (x.getDay() + 6) % 7;
+  x.setDate(x.getDate() - dow);
+  x.setHours(0,0,0,0);
+  return x;
+}
+
+Chart.defaults.color = '#9ca3af';
+Chart.defaults.borderColor = '#1f2937';
+Chart.defaults.font.family = "-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,system-ui,sans-serif";
+Chart.defaults.font.size = 11;
+
+const COLORS = {
+  run:'#10b981', bike:'#3b82f6', swim:'#06b6d4', strength:'#fbbf24', other:'#a78bfa',
+  load:'#a78bfa', readiness:'#34d399', hrv:'#06b6d4', rhr:'#f87171',
+  bbHigh:'#34d399', bbLow:'#f59e0b',
+  sleepDur:'#3b82f6', sleepScore:'#34d399',
+  stress:'#f59e0b',
+  paceEasy:'#10b981', paceTempo:'#f59e0b', paceVma:'#ef4444',
+};
+
+function commonOpts(opts={}){
+  return Object.assign({
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'#0f1421', borderColor:'#252e44', borderWidth:1,
+        titleColor:'#e5e7eb', bodyColor:'#e5e7eb', padding:10, cornerRadius:6,
+        boxPadding:4,
+      }
+    },
+    scales:{
+      x:{grid:{color:'rgba(31,41,55,.5)',drawTicks:false},ticks:{padding:6}},
+      y:{grid:{color:'rgba(31,41,55,.5)',drawTicks:false},ticks:{padding:6},beginAtZero:true},
+    },
+  }, opts);
+}
+
+let DATA;
+
+async function load(){
+  const r = await fetch('data.json?t=' + Date.now());
+  DATA = await r.json();
+  renderHeader();
+  renderKpis();
+  renderGoals();
+  renderVolume();
+  renderDonut();
+  renderLoad();
+  renderPace();
+  renderReadiness();
+  renderRhr();
+  renderBb();
+  renderSleep();
+  renderStress();
+  renderHrvStatus();
+  renderActivities();
+  renderZones();
+}
+
+function renderHeader(){
+  document.getElementById('generated').textContent = DATA.generated_at;
+  document.getElementById('window').textContent = `${DATA.since} -> ${DATA.today}`;
+}
+
+function lastNDaysActivities(n){
+  const today = new Date(DATA.today);
+  const since = new Date(today); since.setDate(since.getDate()-n+1);
+  return DATA.activities.filter(a => new Date(a.activity_date) >= since);
+}
+function lastNDaysMetrics(n){
+  const today = new Date(DATA.today);
+  const since = new Date(today); since.setDate(since.getDate()-n+1);
+  return DATA.metrics.filter(m => new Date(m.metric_date) >= since);
+}
+
+function renderKpis(){
+  const acts14 = lastNDaysActivities(14).filter(a => !isCyclingTrip(a));
+  const acts7  = lastNDaysActivities(7).filter(a => !isCyclingTrip(a));
+  const acts14Prev = (() => {
+    const today = new Date(DATA.today);
+    const start = new Date(today); start.setDate(start.getDate()-27);
+    const end   = new Date(today); end.setDate(end.getDate()-14);
+    return DATA.activities.filter(a => {
+      const d = new Date(a.activity_date);
+      return d >= start && d <= end && !isCyclingTrip(a);
+    });
+  })();
+
+  const sum = (arr, key) => arr.reduce((s,a)=>s+(a[key]||0),0);
+
+  const runKm   = sum(acts14.filter(a => sportBucket(a)==='run'), 'distance_meters')/1000;
+  const bikeKm  = sum(acts14.filter(a => sportBucket(a)==='bike'),'distance_meters')/1000;
+  const swimM   = sum(acts14.filter(a => sportBucket(a)==='swim'),'distance_meters');
+  const charge7 = sum(acts7,'training_load');
+  const runKmPrev  = sum(acts14Prev.filter(a => sportBucket(a)==='run'), 'distance_meters')/1000;
+
+  const days14 = new Set(acts14.map(a => a.activity_date));
+  const allDays14 = (() => {
+    const today = new Date(DATA.today); const out=[];
+    for(let i=0;i<14;i++){const d = new Date(today); d.setDate(d.getDate()-i); out.push(d.toISOString().slice(0,10));}
+    return out;
+  })();
+  const offDays = allDays14.filter(d => !days14.has(d)).length;
+
+  const metrics7 = lastNDaysMetrics(7);
+  const readinessAvg = metrics7.filter(m=>m.training_readiness_score!=null).reduce((s,m)=>s+m.training_readiness_score,0) / Math.max(1, metrics7.filter(m=>m.training_readiness_score!=null).length);
+
+  const sleepAvg = metrics7.filter(m=>m.sleep_duration_seconds!=null).reduce((s,m)=>s+m.sleep_duration_seconds,0) / Math.max(1, metrics7.filter(m=>m.sleep_duration_seconds!=null).length);
+
+  const kpis = [
+    { label:'Seances 14j', value: acts14.length, sub:`${offDays} jour${offDays>1?'s':''} OFF` },
+    { label:'Course 14j',   value: runKm.toFixed(1), unit:'km',
+      delta: runKmPrev>0 ? ((runKm - runKmPrev)/runKmPrev*100) : null },
+    { label:'Velo entrain. 14j', value: bikeKm.toFixed(1), unit:'km',
+      sub:'> 10 km uniquement' },
+    { label:'Nat 14j', value: (swimM/1000).toFixed(2), unit:'km',
+      sub: acts14.filter(a=>sportBucket(a)==='swim').length + ' seances' },
+    { label:'Charge 7j', value: Math.round(charge7), unit:'pts', sub:'training load Garmin' },
+    { label:'Readiness 7j', value: readinessAvg>0 ? Math.round(readinessAvg) : '-', unit:'/100',
+      sub: sleepAvg>0 ? FMT.dur(sleepAvg)+' sommeil' : '' },
+  ];
+
+  document.getElementById('kpi-row').innerHTML = kpis.map(k => {
+    let delta = '';
+    if(k.delta!=null && isFinite(k.delta)){
+      const sign = k.delta>=0 ? '+' : '';
+      const cls = k.delta>=0 ? 'up' : 'down';
+      delta = `<div class="delta ${cls}">${sign}${k.delta.toFixed(0)}% vs 14j precedents</div>`;
+    } else if(k.sub){
+      delta = `<div class="delta">${k.sub}</div>`;
+    }
+    return `<div class="card kpi-card">
+      <div class="label">${k.label}</div>
+      <div class="value">${k.value}${k.unit?` <small>${k.unit}</small>`:''}</div>
+      ${delta}
+    </div>`;
+  }).join('');
+}
+
+function renderGoals(){
+  const today = new Date(DATA.today);
+  const html = DATA.goals.map(g => {
+    let cd = '';
+    let cls = '';
+    if(g.date){
+      const d = new Date(g.date);
+      const days = Math.ceil((d - today) / 86400000);
+      if(days < 0){ cd = `<div class="countdown"><strong>passe</strong>${g.date}</div>`; }
+      else {
+        cls = days <= 7 ? 'imminent' : (days <= 30 ? 'urgent' : '');
+        cd = `<div class="countdown ${cls}"><strong>J-${days}</strong>${d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})}</div>`;
+      }
+    }
+    const pace = g.target_pace_sec_km
+      ? `Allure cible <strong>${FMT.pace(g.target_pace_sec_km)} /km</strong>`
+      : 'Course en gestion';
+    return `<div class="card goal-card">
+      <div class="name">${g.name}</div>
+      <div class="target">${g.target_time}</div>
+      <div class="pace">${pace}</div>
+      ${cd}
+    </div>`;
+  }).join('');
+  document.getElementById('goals-row').innerHTML = html;
+}
+
+function renderVolume(){
+  const today = startOfWeek(new Date(DATA.today));
+  const weeks = [];
+  for(let i=7;i>=0;i--){
+    const monday = new Date(today); monday.setDate(monday.getDate()-i*7);
+    weeks.push(monday);
+  }
+  const buckets = {run:[],bike:[],swim:[],strength:[]};
+  weeks.forEach(monday => {
+    const sun = new Date(monday); sun.setDate(sun.getDate()+6);
+    const within = DATA.activities.filter(a => {
+      const d = new Date(a.activity_date);
+      return d >= monday && d <= sun;
+    });
+    buckets.run.push(within.filter(a=>sportBucket(a)==='run').reduce((s,a)=>s+(a.distance_meters||0),0)/1000);
+    buckets.bike.push(within.filter(a=>sportBucket(a)==='bike' && !isCyclingTrip(a)).reduce((s,a)=>s+(a.distance_meters||0),0)/1000);
+    buckets.swim.push(within.filter(a=>sportBucket(a)==='swim').reduce((s,a)=>s+(a.distance_meters||0),0)/100); // hm = hectometres pour mise a l'echelle
+    buckets.strength.push(within.filter(a=>sportBucket(a)==='strength').reduce((s,a)=>s+(a.duration_seconds||0),0)/3600);
+  });
+
+  new Chart(document.getElementById('ch-volume'), {
+    type:'bar',
+    data:{
+      labels: weeks.map(w => weekLabel(w)),
+      datasets:[
+        {label:'Course (km)',    data:buckets.run,      backgroundColor:COLORS.run,      stack:'a', borderRadius:4},
+        {label:'Velo entrain. (km)', data:buckets.bike, backgroundColor:COLORS.bike,    stack:'a', borderRadius:4},
+        {label:'Nat (hm)',       data:buckets.swim,     backgroundColor:COLORS.swim,    stack:'a', borderRadius:4},
+        {label:'Muscu (h)',      data:buckets.strength, backgroundColor:COLORS.strength,stack:'a', borderRadius:4},
+      ],
+    },
+    options: commonOpts({
+      scales:{
+        x:{stacked:true,grid:{display:false},ticks:{padding:6}},
+        y:{stacked:true,grid:{color:'rgba(31,41,55,.5)'},ticks:{padding:6},beginAtZero:true},
+      },
+      plugins:{legend:{display:false},
+        tooltip:{
+          callbacks:{ title:(items)=>'Semaine du '+items[0].label,
+            label:(ctx)=>` ${ctx.dataset.label} : ${ctx.parsed.y.toFixed(1)}` }
+        }
+      }
+    }),
+  });
+}
+
+function renderDonut(){
+  const acts = lastNDaysActivities(30).filter(a => !isCyclingTrip(a));
+  const counts = {run:0,bike:0,swim:0,strength:0,other:0};
+  acts.forEach(a => { counts[sportBucket(a)]++; });
+  const labels = ['Course','Velo','Nat','Muscu','Autre'];
+  const values = [counts.run,counts.bike,counts.swim,counts.strength,counts.other];
+  const bg = [COLORS.run,COLORS.bike,COLORS.swim,COLORS.strength,COLORS.other];
+  new Chart(document.getElementById('ch-donut'), {
+    type:'doughnut',
+    data:{labels,datasets:[{data:values,backgroundColor:bg,borderColor:'#131826',borderWidth:2}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      cutout:'62%',
+      plugins:{
+        legend:{position:'bottom',labels:{boxWidth:10,boxHeight:10,padding:12,color:'#9ca3af'}},
+        tooltip:{backgroundColor:'#0f1421',borderColor:'#252e44',borderWidth:1,padding:10}
+      }
+    }
+  });
+}
+
+function renderLoad(){
+  const today = new Date(DATA.today);
+  const byDay = {};
+  DATA.activities.forEach(a => {
+    if(!a.training_load) return;
+    byDay[a.activity_date] = (byDay[a.activity_date]||0) + a.training_load;
+  });
+  const days = [];
+  for(let i=29;i>=0;i--){
+    const d = new Date(today); d.setDate(d.getDate()-i);
+    days.push(d.toISOString().slice(0,10));
+  }
+  const daily = days.map(d => byDay[d]||0);
+  const rolling = daily.map((_,i) => {
+    const slice = daily.slice(Math.max(0,i-6), i+1);
+    return slice.reduce((s,x)=>s+x,0);
+  });
+
+  new Chart(document.getElementById('ch-load'), {
+    type:'bar',
+    data:{
+      labels: days.map(d => new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})),
+      datasets:[
+        {type:'bar',label:'Charge quotidienne',data:daily,backgroundColor:'rgba(167,139,250,.35)',borderRadius:3,order:2},
+        {type:'line',label:'Charge rolling 7j',data:rolling,borderColor:COLORS.load,backgroundColor:'rgba(167,139,250,.1)',tension:.35,pointRadius:0,borderWidth:2,fill:true,order:1},
+      ],
+    },
+    options: commonOpts({
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{display:false},ticks:{padding:6,maxRotation:0,autoSkipPadding:14}},
+        y:{grid:{color:'rgba(31,41,55,.5)'},ticks:{padding:6},beginAtZero:true},
+      }
+    }),
+  });
+}
+
+function renderPace(){
+  const today = new Date(DATA.today);
+  const since = new Date(today); since.setDate(since.getDate()-59);
+  const runs = DATA.activities.filter(a =>
+    sportBucket(a)==='run' &&
+    a.avg_pace_sec_km && a.avg_pace_sec_km > 150 && a.avg_pace_sec_km < 500 &&
+    new Date(a.activity_date) >= since
+  );
+
+  const easy=[],tempo=[],vma=[];
+  runs.forEach(r => {
+    const p = {x:r.activity_date, y:r.avg_pace_sec_km, t:r.title, dist:r.distance_meters, hr:r.avg_hr};
+    if(r.avg_pace_sec_km > 280) easy.push(p);
+    else if(r.avg_pace_sec_km > 230) tempo.push(p);
+    else vma.push(p);
+  });
+
+  new Chart(document.getElementById('ch-pace'), {
+    type:'scatter',
+    data:{datasets:[
+      {label:'Endurance',  data:easy,  backgroundColor:COLORS.paceEasy,  pointRadius:6, pointHoverRadius:8},
+      {label:'Tempo/Seuil',data:tempo, backgroundColor:COLORS.paceTempo, pointRadius:6, pointHoverRadius:8},
+      {label:'VMA / spe',  data:vma,   backgroundColor:COLORS.paceVma,   pointRadius:6, pointHoverRadius:8},
+    ]},
+    options: commonOpts({
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{
+          label:(ctx)=>{
+            const p=ctx.raw;
+            return [
+              p.t || 'Course',
+              `${FMT.pace(p.y)} /km`,
+              `${FMT.km(p.dist)} - FC ${p.hr||'-'}`
+            ];
+          },
+          title:(items)=>FMT.date(items[0].raw.x),
+        }}
+      },
+      scales:{
+        x:{type:'time',time:{unit:'week',displayFormats:{week:'dd/MM'}},grid:{color:'rgba(31,41,55,.5)'},ticks:{padding:6}},
+        y:{
+          reverse:true,
+          grid:{color:'rgba(31,41,55,.5)'},
+          ticks:{padding:6,callback:v=>FMT.pace(v)},
+          min:170, max:400,
+        }
+      }
+    }),
+  });
+}
+
+function dailySeries(field, days=30){
+  const today = new Date(DATA.today);
+  const byDate = {};
+  DATA.metrics.forEach(m => byDate[m.metric_date] = m);
+  const labels = [], values = [];
+  for(let i=days-1;i>=0;i--){
+    const d = new Date(today); d.setDate(d.getDate()-i);
+    const iso = d.toISOString().slice(0,10);
+    labels.push(iso);
+    const m = byDate[iso];
+    values.push(m && m[field]!=null ? m[field] : null);
+  }
+  return {labels,values};
+}
+
+function renderReadiness(){
+  const {labels,values} = dailySeries('training_readiness_score', 30);
+  new Chart(document.getElementById('ch-readiness'), {
+    type:'line',
+    data:{labels:labels.map(l=>FMT.date(l)),datasets:[
+      {label:'Readiness',data:values,borderColor:COLORS.readiness,backgroundColor:'rgba(52,211,153,.12)',tension:.3,pointRadius:0,borderWidth:2,fill:true,spanGaps:true},
+    ]},
+    options: commonOpts({
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:c=>` ${c.parsed.y}/100`}}
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{padding:6,maxRotation:0,autoSkipPadding:14}},
+        y:{min:0,max:100,grid:{color:'rgba(31,41,55,.5)'},ticks:{padding:6,stepSize:25}},
+      }
+    }),
+  });
+}
+
+function renderRhr(){
+  const rhr = dailySeries('resting_hr', 30);
+  const hrv = dailySeries('hrv_last_night', 30);
+  new Chart(document.getElementById('ch-rhr'), {
+    type:'line',
+    data:{labels:rhr.labels.map(l=>FMT.date(l)),datasets:[
+      {label:'FC repos (bpm)',data:rhr.values,borderColor:COLORS.rhr,backgroundColor:'rgba(248,113,113,.1)',yAxisID:'y',tension:.3,pointRadius:0,borderWidth:2,spanGaps:true},
+      {label:'HRV (ms)',data:hrv.values,borderColor:COLORS.hrv,backgroundColor:'rgba(6,182,212,.1)',yAxisID:'y1',tension:.3,pointRadius:0,borderWidth:2,borderDash:[4,4],spanGaps:true},
+    ]},
+    options: commonOpts({
+      plugins:{legend:{position:'bottom',display:true,labels:{boxWidth:10,boxHeight:10,padding:10}}},
+      scales:{
+        x:{grid:{display:false},ticks:{padding:6,maxRotation:0,autoSkipPadding:14}},
+        y:{position:'left',grid:{color:'rgba(31,41,55,.5)'},ticks:{padding:6},beginAtZero:false},
+        y1:{position:'right',grid:{display:false},ticks:{padding:6},beginAtZero:false},
+      }
+    }),
+  });
+}
+
+function renderBb(){
+  const high = dailySeries('body_battery_high', 30);
+  const low  = dailySeries('body_battery_low', 30);
+  new Chart(document.getElementById('ch-bb'), {
+    type:'line',
+    data:{labels:high.labels.map(l=>FMT.date(l)),datasets:[
+      {label:'Pic matin',data:high.values,borderColor:COLORS.bbHigh,backgroundColor:'rgba(52,211,153,.15)',tension:.3,pointRadius:0,borderWidth:2,fill:'+1',spanGaps:true},
+      {label:'Creux soir',data:low.values,borderColor:COLORS.bbLow,backgroundColor:'rgba(245,158,11,.1)',tension:.3,pointRadius:0,borderWidth:2,spanGaps:true},
+    ]},
+    options: commonOpts({
+      plugins:{legend:{position:'bottom',display:true,labels:{boxWidth:10,boxHeight:10,padding:10}}},
+      scales:{
+        x:{grid:{display:false},ticks:{padding:6,maxRotation:0,autoSkipPadding:14}},
+        y:{min:0,max:100,grid:{color:'rgba(31,41,55,.5)'},ticks:{padding:6,stepSize:25}},
+      }
+    }),
+  });
+}
+
+function renderSleep(){
+  const dur = dailySeries('sleep_duration_seconds', 30);
+  const score = dailySeries('sleep_score', 30);
+  const durH = dur.values.map(v => v==null ? null : v/3600);
+  new Chart(document.getElementById('ch-sleep'), {
+    data:{labels:dur.labels.map(l=>FMT.date(l)),datasets:[
+      {type:'bar',label:'Duree (h)',data:durH,backgroundColor:'rgba(59,130,246,.4)',borderRadius:3,yAxisID:'y'},
+      {type:'line',label:'Score',data:score.values,borderColor:COLORS.sleepScore,backgroundColor:'rgba(52,211,153,.1)',yAxisID:'y1',tension:.3,pointRadius:0,borderWidth:2,spanGaps:true},
+    ]},
+    options: commonOpts({
+      plugins:{legend:{position:'bottom',display:true,labels:{boxWidth:10,boxHeight:10,padding:10}}},
+      scales:{
+        x:{grid:{display:false},ticks:{padding:6,maxRotation:0,autoSkipPadding:14}},
+        y:{position:'left',grid:{color:'rgba(31,41,55,.5)'},ticks:{padding:6},min:0,max:10},
+        y1:{position:'right',grid:{display:false},ticks:{padding:6},min:0,max:100},
+      }
+    }),
+  });
+}
+
+function renderStress(){
+  const {labels,values} = dailySeries('stress_avg', 30);
+  new Chart(document.getElementById('ch-stress'), {
+    type:'bar',
+    data:{labels:labels.map(l=>FMT.date(l)),datasets:[
+      {label:'Stress moy',data:values,backgroundColor:'rgba(245,158,11,.45)',borderRadius:3},
+    ]},
+    options: commonOpts({
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{display:false},ticks:{padding:6,maxRotation:0,autoSkipPadding:14}},
+        y:{min:0,max:100,grid:{color:'rgba(31,41,55,.5)'},ticks:{padding:6,stepSize:25}},
+      }
+    }),
+  });
+}
+
+function renderHrvStatus(){
+  const recent = DATA.metrics.slice().sort((a,b)=>a.metric_date.localeCompare(b.metric_date)).slice(-30);
+  const counts = {BALANCED:0, UNBALANCED:0, LOW:0, NONE:0};
+  recent.forEach(m => {
+    const s = (m.hrv_status||'').toUpperCase();
+    if(counts[s]!=null) counts[s]++; else counts.NONE++;
+  });
+  const total = recent.length || 1;
+  const rows = [
+    {k:'BALANCED', label:'Balanced (bonne recup)', cls:'balanced', n:counts.BALANCED},
+    {k:'UNBALANCED', label:'Unbalanced (stress accumule)', cls:'unbalanced', n:counts.UNBALANCED},
+    {k:'LOW', label:'Low (fatigue ou maladie qui couve)', cls:'low', n:counts.LOW},
+  ];
+  document.getElementById('hrv-status').innerHTML = `
+    <table>
+      <thead><tr><th>Statut</th><th class="num">Jours</th><th class="num">%</th></tr></thead>
+      <tbody>
+        ${rows.map(r=>`<tr><td><span class="pill ${r.cls}">${r.k}</span> <span style="color:var(--muted);font-size:11.5px;margin-left:6px">${r.label}</span></td><td class="num">${r.n}</td><td class="num">${(r.n/total*100).toFixed(0)}%</td></tr>`).join('')}
+        ${counts.NONE>0 ? `<tr><td><span style="color:var(--dim)">Non mesure</span></td><td class="num">${counts.NONE}</td><td class="num">${(counts.NONE/total*100).toFixed(0)}%</td></tr>` : ''}
+      </tbody>
+    </table>
+    <div class="hint-box">Sur ${recent.length} derniers jours mesures.</div>
+  `;
+}
+
+function renderActivities(){
+  const acts = DATA.activities.slice(0, 30);
+  const tbody = document.querySelector('#tbl-activities tbody');
+  tbody.innerHTML = acts.map(a => {
+    const sb = sportBucket(a);
+    const tripTag = isCyclingTrip(a) ? ' <span style="color:var(--dim);font-size:10.5px">(trajet)</span>' : '';
+    const paceCell = sb==='run' || sb==='swim'
+      ? FMT.pace(a.avg_pace_sec_km)
+      : FMT.speed(a.avg_speed_kmh);
+    const te = a.aerobic_te ? a.aerobic_te.toFixed(1) : '-';
+    return `<tr>
+      <td>${FMT.date(a.activity_date)}</td>
+      <td><span class="pill ${sb}">${sb}</span></td>
+      <td>${(a.title||'').slice(0,42)}${tripTag}</td>
+      <td class="num">${sb==='swim' ? FMT.m(a.distance_meters) : FMT.km(a.distance_meters)}</td>
+      <td class="num">${FMT.dur(a.duration_seconds)}</td>
+      <td class="num">${paceCell}</td>
+      <td class="num">${a.avg_hr||'-'}</td>
+      <td class="num">${a.training_load ? Math.round(a.training_load) : '-'}</td>
+      <td class="num">${te}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderZones(){
+  const tbody = document.querySelector('#tbl-zones tbody');
+  tbody.innerHTML = DATA.pace_zones.map(z => `
+    <tr>
+      <td class="zone-name">${z.name}</td>
+      <td class="num zone-pace">${z.pace_min} - ${z.pace_max}</td>
+      <td class="num zone-hr">${z.hr}</td>
+    </tr>
+  `).join('');
+}
+
+load().catch(err => {
+  document.querySelector('.wrap').insertAdjacentHTML('beforeend',
+    `<div class="card" style="margin-top:20px;color:var(--danger)">Erreur de chargement : ${err.message}<br/><br/>
+    Lance d'abord : <code>python dashboard/build_data.py</code></div>`);
+});
+</script>
+</body>
+</html>
