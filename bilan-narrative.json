@@ -1,0 +1,23 @@
+{
+  "verdict_emoji": "🔥",
+  "verdict_title": "Grosse semaine encaissée sans broncher",
+  "verdict_sub": "Toutes tes séances clés tenues, le corps suit. Seul trou : zéro muscu.",
+  "plan_summary": "Séances clés (course longue, footing, vélo long, nat) toutes tenues, dont 5 jours d'affilée à 2 disciplines. Le seul vrai trou : la muscu jambes du vendredi 12, remplacée par de la nat. Zéro muscu sur toute la fenêtre.",
+  "plan_rows": [
+    {"day": "Ven 12", "planned": "Allure marathon 3x10 min + Muscu jambes", "done": "Tapis 12,1 km à 4'53/km FC158 + Nat 1,45 km", "status": "partial", "note": "Course pile dans l'allure marathon. Muscu pas faite."},
+    {"day": "Sam 13", "planned": "Sortie longue course 1h45 Z2", "done": "17,3 km en 1h39 à 5'42/km FC159", "status": "ok", "note": "Z2 propre, allure de SL maîtrisée."},
+    {"day": "Dim 14", "planned": "Vélo long 90-100 km Z2", "done": "86,9 km en 2h56 à 29,6 km/h FC155 D+607m", "status": "ok", "note": "Quasi conforme, grosse sortie avec du dénivelé."},
+    {"day": "Lun 15", "planned": "Footing Z2 55 + strides + Nat technique 1000 m", "done": "12,0 km à 5'10/km FC153 + Nat 1,30 km", "status": "ok", "note": "Footing + nat tenus, FC basse = à l'aise."},
+    {"day": "Mar 16", "planned": "Nat pull-buoy contraste 1400 m", "done": "Nat 1,50 km en 38 min", "status": "ok", "note": "Conforme."},
+    {"day": "Mer 17", "planned": "Footing Z2 60 + strides + Vélo Sweet Spot 2x20", "done": "Vélo 39 km à 31,3 km/h FC160 charge229", "status": "partial", "note": "Vélo fait (intense). Footing matin pas encore fait."}
+  ],
+  "highlights": [
+    {"title": "Vélo long dimanche", "punch": "87 bornes, 600m de D+, 30 de moyenne. T'as pas roulé, t'as attaqué. Charge 264, le plus gros bloc de la semaine."},
+    {"title": "Sweet Spot mercredi", "punch": "39 km en 1h15 mais charge 229 : t'as vraiment poussé le 2x20. Pour 1h15 c'est énorme, intensité parfaitement dosée."},
+    {"title": "Le corps qui suit", "punch": "HRV qui monte (59→64), FC repos qui tombe à 43, stress au plus bas. En pleine charge, ton système nerveux encaisse sans décrocher."}
+  ],
+  "to_remember": "Semaine de charge réussie sur la course et le vélo, mais ta muscu est passée à zéro - et c'est non négociable (2x1h/sem mini). Tu es entré dans la semaine frais et reposé, le corps absorbe tout. Le seul levier qui manque : les deux muscus. À recaler au weekend 20-21 en stack post-vélo/SL.",
+  "risk_level": "ok",
+  "risk_text": "Pas de risque actuel. Tous les voyants de récup sont au vert et s'améliorent. Seul point de vigilance : 6 jours sans OFF d'affilée. Garde le OFF du 26/06 (diplôme IUT), ne le grignote pas.",
+  "next_week": "4x4 norvégien vendredi 19 (la VO2max que tu réclamais), vélo long 100 km + SL 1h55 le weekend, et surtout les 2 muscus jambes/haut recalées au weekend 20-21 - cette fois on les tient."
+}
