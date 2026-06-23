@@ -1,23 +1,22 @@
 {
-  "verdict_emoji": "🔥",
-  "verdict_title": "Grosse semaine encaissée sans broncher",
-  "verdict_sub": "Toutes tes séances clés tenues, le corps suit. Seul écart : la muscu de vendredi 12.",
-  "plan_summary": "Séances clés (course longue, footing, vélo long, nat) toutes tenues, dont 5 jours d'affilée à 2 disciplines. Le footing du mercredi 17 a été rattrapé le jeudi 18 au matin (décalé, pas manqué). Seul vrai écart de la fenêtre : la muscu jambes du vendredi 12, remplacée par de la nat. Tes 2 muscus hebdo sont calées au weekend 20-21 comme prévu, pas en retard.",
+  "verdict_emoji": "🚴",
+  "verdict_title": "Le vélo a tout mangé",
+  "verdict_sub": "100 bornes canon le samedi, mais les deux grosses séances course (VO2max + sortie longue) sont passées à la trappe.",
+  "plan_summary": "Base course tenue (2 footings propres), vélo long 100 km parfait, 2 muscus dans la boîte. Le trou de la semaine, c'est la course de qualité : le 4x4 norvégien du vendredi sauté, et surtout la sortie longue du dimanche jamais partie - direct conséquence du 100 km de la veille qui t'a lessivé (préparation Garmin tombée à 15-20). La nat du lundi soir n'a pas pu se faire : piscine fermée (transition Marx Dormoy vers Camille Muffat). Tu remplaces ce soir.",
   "plan_rows": [
-    {"day": "Ven 12", "planned": "Allure marathon 3x10 min + Muscu jambes", "done": "Tapis 12,1 km à 4'53/km FC158 + Nat 1,45 km", "status": "partial", "note": "Course pile dans l'allure marathon. Muscu pas faite."},
-    {"day": "Sam 13", "planned": "Sortie longue course 1h45 Z2", "done": "17,3 km en 1h39 à 5'42/km FC159", "status": "ok", "note": "Z2 propre, allure de SL maîtrisée."},
-    {"day": "Dim 14", "planned": "Vélo long 90-100 km Z2", "done": "86,9 km en 2h56 à 29,6 km/h FC155 D+607m", "status": "ok", "note": "Quasi conforme, grosse sortie avec du dénivelé."},
-    {"day": "Lun 15", "planned": "Footing Z2 55 + strides + Nat technique 1000 m", "done": "12,0 km à 5'10/km FC153 + Nat 1,30 km", "status": "ok", "note": "Footing + nat tenus, FC basse = à l'aise."},
-    {"day": "Mar 16", "planned": "Nat pull-buoy contraste 1400 m", "done": "Nat 1,50 km en 38 min", "status": "ok", "note": "Conforme."},
-    {"day": "Mer 17", "planned": "Footing Z2 60 + strides + Vélo Sweet Spot 2x20", "done": "Vélo 39 km FC160 charge229 + footing rattrapé le 18 (12 km à 5'22/km FC163)", "status": "ok", "note": "Les deux faits. Footing décalé au jeudi matin (couru chaud sur jambes fatiguées du Sweet Spot = BPM hauts, normal)."}
+    {"day": "Jeu 18", "planned": "Nat 6x200 R1min15", "done": "Nat 1,75 km FC132 + bonus footing 12 km à 5'22/km FC163", "status": "ok", "note": "Nat conforme, tranquille. Footing 12 km en rab le matin = bonus."},
+    {"day": "Ven 19", "planned": "4x4 norvégien (VO2max)", "done": "Rien", "status": "miss", "note": "La séance VO2max que tu réclamais, pas faite. Aucune intensité course de la semaine du coup."},
+    {"day": "Sam 20", "planned": "Vélo long 100 km Z2 + Muscu jambes", "done": "Vélo 100,8 km en 3h41 FC156 D+844m charge359", "status": "ok", "note": "Le bloc du week-end. 100 bornes pile, 844 m de D+. Muscu jambes décalée au dimanche."},
+    {"day": "Dim 21", "planned": "SL course 1h55 Z2 + Muscu haut", "done": "Muscu 58 min", "status": "miss", "note": "Sortie longue jamais partie : corps lessivé par le 100 km + nuit pourrie (sommeil 56, 6h37). Muscu faite."},
+    {"day": "Lun 22", "planned": "Footing Z2 55 + strides + Nat technique 1500", "done": "Footing 10 km à 5'18/km FC157 + Muscu 58 min", "status": "partial", "note": "Footing tenu. Nat impossible (piscine fermée), remplacée par une muscu - donc 2 muscus dans la semaine, c'est bon."}
   ],
   "highlights": [
-    {"title": "Vélo long dimanche", "punch": "87 bornes, 600m de D+, 30 de moyenne. T'as pas roulé, t'as attaqué. Charge 264, le plus gros bloc de la semaine."},
-    {"title": "Sweet Spot mercredi", "punch": "39 km en 1h15 mais charge 229 : t'as vraiment poussé le 2x20. Pour 1h15 c'est énorme, intensité parfaitement dosée."},
-    {"title": "Le corps qui suit", "punch": "HRV qui monte (59→64), FC repos qui tombe à 43, stress au plus bas. En pleine charge, ton système nerveux encaisse sans décrocher."}
+    {"title": "100 km samedi", "punch": "3h41, 844 m de D+, charge 359 : ton plus gros bloc depuis longtemps. Mais il a tout pris - la SL du lendemain en a payé le prix."},
+    {"title": "La course de qualité absente", "punch": "Zéro séance d'intensité ni de sortie longue course cette semaine. 4x4 ET SL 1h55 sautés : tu tournes en endurance facile, pas en travail."},
+    {"title": "Récup dans le rouge", "punch": "Préparation Garmin à 20/35/15/28 du 20 au 23, body battery qui ne recharge plus (creux à 9). Fatigue aiguë post-100 km, pas chronique : HRV qui monte encore (62 vers 66), FC repos à 45."}
   ],
-  "to_remember": "Semaine de charge réussie sur la course et le vélo, le corps absorbe tout (tu es entré frais et reposé). Le seul écart, c'est la muscu jambes du vendredi 12 sautée. Tes 2 muscus hebdo sont calées au weekend 20-21 (jambes + haut), à leur place normale - rien à rattraper de ce côté, juste à les tenir.",
-  "risk_level": "ok",
-  "risk_text": "Pas de risque actuel. Tous les voyants de récup sont au vert et s'améliorent. Seul point de vigilance : 6 jours sans OFF d'affilée. Garde le OFF du 26/06 (diplôme IUT), ne le grignote pas.",
-  "next_week": "4x4 norvégien vendredi 19 (la VO2max que tu réclamais), vélo long 100 km + SL 1h55 le weekend, avec les 2 muscus jambes/haut en stack le sam 20 et dim 21 comme prévu."
+  "to_remember": "Bonne semaine vélo + base, mais la course de fond/qualité est passée à zéro (4x4 + SL 1h55 sautés). Le 100 km du samedi a creusé un trou de récup qui a emporté la sortie longue du dimanche. La nat du lundi, c'est la piscine fermée, pas toi. Le vrai apprentissage : ne pas coller une SL course le lendemain d'un 100 km vélo, le corps ne suit pas.",
+  "risk_level": "warn",
+  "risk_text": "Pas de surentraînement (HRV en hausse, FC repos basse), mais fatigue aiguë réelle : préparation Garmin sous 30 depuis 3 jours, body battery qui ne remonte pas. Le OFF du 26 (diplôme IUT) tombe pile, protège-le. D'ici là, garde les séances faciles et ne force pas la nat de ce soir.",
+  "next_week": "Seuil course 5x6 min le jeudi 25 = la séance de qualité à ne PAS rater cette fois (ça fait une semaine sans intensité course). OFF protégé le 26. Vélo long 110 km + SL 2h05 le week-end : cette fois, espace la SL du gros vélo."
 }
