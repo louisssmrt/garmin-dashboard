@@ -118,6 +118,7 @@ html,body{
 .gauge .val small{font-size:.45em;color:var(--muted);font-weight:600;margin-left:2px}
 .gauge .delta{font-size:12.5px;margin-top:7px;font-weight:600}
 .gauge .delta.up{color:var(--ok)}.gauge .delta.down{color:var(--danger)}.gauge .delta.flat{color:var(--dim)}
+.gauge .avg7{font-size:11.5px;color:var(--dim);margin-top:6px;font-weight:500}
 .gauge .track{margin-top:12px;height:5px;background:var(--border);border-radius:99px;overflow:hidden}
 .gauge .track span{display:block;height:100%;border-radius:99px}
 
@@ -196,7 +197,7 @@ footer{margin-top:50px;text-align:center;font-size:12px;color:var(--dim)}
   </div>
 
   <div class="block">
-    <h2 class="sec">Récupération <span class="meta">vs semaine précédente</span></h2>
+    <h2 class="sec">Récupération <span class="meta" id="gauges-meta"></span></h2>
     <div class="gauges" id="gauges"></div>
   </div>
 
@@ -224,13 +225,13 @@ footer{margin-top:50px;text-align:center;font-size:12px;color:var(--dim)}
 const COLORS={run:'#11d989',bike:'#3d8bff',swim:'#16cfe6',strength:'#ffb023',other:'#a78bfa'};
 const fr=(s)=>s||'';
 
-function deltaHtml(cur,prev,betterLow=false,unit=''){
+function deltaHtml(cur,prev,betterLow=false,unit='',label=' vs S-1'){
   if(cur==null||prev==null) return '<div class="delta flat">—</div>';
   const d=Math.round((cur-prev)*10)/10;
-  if(Math.abs(d)<0.05) return '<div class="delta flat">stable</div>';
+  if(Math.abs(d)<0.05) return `<div class="delta flat">stable${label}</div>`;
   const better = betterLow ? d<0 : d>0;
   const arrow = d>0?'▲':'▼';
-  return `<div class="delta ${better?'up':'down'}">${arrow} ${d>0?'+':''}${d}${unit} vs S-1</div>`;
+  return `<div class="delta ${better?'up':'down'}">${arrow} ${d>0?'+':''}${d}${unit}${label}</div>`;
 }
 
 fetch('bilan-data.json?'+Date.now()).then(r=>r.json()).then(d=>{
@@ -280,23 +281,31 @@ fetch('bilan-data.json?'+Date.now()).then(r=>r.json()).then(d=>{
     </div>`;
   }).join('');
 
-  // gauges
-  const m=d.metrics,p=d.metrics_prev;
+  // gauges — valeur du DERNIER jour en gros, moyenne 7j en dessous, delta = jour vs moy 7j
+  const m=d.metrics,l=d.metrics_last||{};
+  const pctRhr=(v)=>v?Math.max(0,100-(v-38)*4):0;
+  const pctStress=(v)=>v?Math.max(0,100-v*1.6):0;
   const g=[
-    {label:'Readiness',val:m.readiness,sm:'/100',prev:p.readiness,low:false,pct:m.readiness,color:'--run'},
-    {label:'FC repos',val:m.resting_hr,sm:'bpm',prev:p.resting_hr,low:true,pct:m.resting_hr?Math.max(0,100-(m.resting_hr-38)*4):0,color:'--swim'},
-    {label:'Sommeil',val:m.sleep_score,sm:'/100',prev:p.sleep_score,low:false,pct:m.sleep_score,color:'--bike'},
-    {label:'Stress',val:m.stress,sm:'/100',prev:p.stress,low:true,pct:m.stress?Math.max(0,100-m.stress*1.6):0,color:'--strength'},
+    {label:'Readiness',today:l.readiness,avg:m.readiness,sm:'/100',low:false,pct:l.readiness,color:'--run'},
+    {label:'FC repos',today:l.resting_hr,avg:m.resting_hr,sm:'bpm',low:true,pct:pctRhr(l.resting_hr),color:'--swim'},
+    {label:'Sommeil',today:l.sleep_score,avg:m.sleep_score,sm:'/100',low:false,pct:l.sleep_score,color:'--bike'},
+    {label:'Stress',today:l.stress,avg:m.stress,sm:'/100',low:true,pct:pctStress(l.stress),color:'--strength'},
   ];
   document.getElementById('gauges').innerHTML=g.map(x=>{
     const col=getComputedStyle(document.documentElement).getPropertyValue(x.color);
     return `<div class="gauge">
       <div class="label">${x.label}</div>
-      <div class="val">${x.val??'—'}<small>${x.sm}</small></div>
-      ${deltaHtml(x.val,x.prev,x.low)}
+      <div class="val">${x.today??'—'}<small>${x.sm}</small></div>
+      ${deltaHtml(x.today,x.avg,x.low,'',' vs moy 7j')}
+      <div class="avg7">moy 7j : ${x.avg??'—'}${x.sm==='bpm'?' bpm':''}</div>
       <div class="track"><span style="width:${Math.min(100,Math.max(4,x.pct||4))}%;background:${col}"></span></div>
     </div>`;
   }).join('');
+
+  // meta du titre récup = date du dernier jour dispo
+  const ld=l.date;
+  const frDay = ld ? `${ld.slice(8,10)}/${ld.slice(5,7)}` : '';
+  document.getElementById('gauges-meta').textContent = ld ? `état du ${frDay} · moyenne 7j en dessous` : 'moyenne 7j';
 
   // highlights
   document.getElementById('highlights').innerHTML=n.highlights.map(h=>

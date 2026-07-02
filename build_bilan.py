@@ -176,6 +176,19 @@ def main():
     cur_m = metric_block(m_cur)
     prev_m = metric_block(m_prev)
 
+    # --- metriques du DERNIER jour dispo (etat actuel, pas la moyenne) ---
+    last_row = m_cur[-1] if m_cur else None
+    metrics_last = {
+        "date": last_row["metric_date"] if last_row else None,
+        "readiness": last_row.get("training_readiness_score") if last_row else None,
+        "resting_hr": last_row.get("resting_hr") if last_row else None,
+        "sleep_score": last_row.get("sleep_score") if last_row else None,
+        "stress": last_row.get("stress_avg") if last_row else None,
+        "hrv_status": last_row.get("hrv_status") if last_row else None,
+        "bb_high": last_row.get("body_battery_high") if last_row else None,
+        "bb_low": last_row.get("body_battery_low") if last_row else None,
+    }
+
     # --- courses : allure par seance ---
     run_sessions = []
     for a in cur:
@@ -264,6 +277,7 @@ def main():
         "off_days": off_days,
         "metrics": cur_m,
         "metrics_prev": prev_m,
+        "metrics_last": metrics_last,
         "run_sessions": run_sessions,
         "marquantes": marquantes,
         "planned": planned,
