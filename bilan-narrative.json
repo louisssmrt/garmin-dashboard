@@ -1,24 +1,24 @@
 {
   "verdict_emoji": "🟡",
-  "verdict_title": "Semaine de maintien, pas de progression",
-  "verdict_sub": "5 séances en 7 jours. La course tourne bien, mais zéro vélo, la quali seuil sautée et plus de muscu. Tes events + la canicule, pas ton corps : ta récup était au vert toute la semaine.",
-  "plan_summary": "5 séances faites sur 9 prévues (hors OFF). Les footings et la nat ont tenu, mais les 2 vélos, la quali seuil course et les 2 muscus week-end sont passés à la trappe. Semaine 100% portée par la course, vélo et muscu à zéro. Pas un drame vu le contexte (diplôme IUT, anniv, ciné, canicule), mais c'est de l'entretien, pas du travail.",
+  "verdict_title": "Grosse semaine productive, mais pas frais pour ce soir",
+  "verdict_sub": "Le vélo est revenu fort (71 km Z2 + VO2max) et la charge 7j grimpe à 917 : c'est du travail, pas du maintien. Revers : ta readiness sort d'un trou (10 → 34) creusé par une nuit à 4h18. Pour la quali seuil de ce soir, tu n'es pas sur des jambes fraîches.",
+  "plan_summary": "Bien meilleure semaine que la précédente : le trou vélo est comblé (2h29 de Z2 + un VO2max), la muscu et le footing du lundi tenus, un bon tempo dimanche. Charge 7j à 917 = zone productive, ce que tu veux. Le seul point noir : la nuit du 30 au 01 (4h18, score 55, soirée date) qui a plombé la récup et enchaîné readiness 10/10/34.",
   "plan_rows": [
-    {"day": "Mar 23", "planned": "Nat contraste pull-buoy 1700 m", "done": "Nat 1600 m FC128", "status": "ok", "note": "Fait, tranquille. 100 m sous le volume prévu, rien de grave."},
-    {"day": "Mer 24", "planned": "Footing Z2 60 + strides + Vélo Seuil 4x8", "done": "Footing 11 km à 5'42/km FC155", "status": "partial", "note": "Footing Z2 propre. Vélo seuil 4x8 du soir pas fait - premier des deux vélos zappés."},
-    {"day": "Jeu 25", "planned": "Seuil course 5x6 min (mat) + Nat 6x200 (soir)", "done": "Rien", "status": "miss", "note": "La grosse quali course de la semaine sautée, plus la nat du soir. Aucune intensité course de toute la semaine."},
     {"day": "Ven 26", "planned": "OFF - Diplôme IUT", "done": "Repos", "status": "ok", "note": "OFF prévu, respecté."},
-    {"day": "Sam 27", "planned": "Vélo long 110 km Z2 + Muscu jambes", "done": "Nat 1650 m FC145 charge118", "status": "miss", "note": "Pas de vélo, pas de muscu (anniv Guillaume). Tu as nagé à la place - séance correcte mais ce n'était pas le programme."},
-    {"day": "Dim 28", "planned": "SL course 2h05 Z2 + Muscu haut", "done": "Course 12 km à 4'58/km FC170 max184 charge204 TE4.2", "status": "partial", "note": "La SL longue est devenue un tempo court d'1h. Bonne séance quali, mais pas le volume d'endurance prévu. Muscu haut pas faite (ciné le soir)."},
-    {"day": "Lun 29", "planned": "Footing Z2 55 + strides + Nat technique 1500", "done": "Footing 12 km à 5'24/km FC153", "status": "partial", "note": "Footing Z2 propre ce matin. Nat technique du soir impossible : piscine fermée (Marx Dormoy fermée, Camille Muffat pas ouverte)."}
+    {"day": "Sam 27", "planned": "Vélo long 110 km Z2 + Muscu jambes", "done": "Nat 1650 m FC145 charge118", "status": "miss", "note": "Vélo long et muscu jambes sautés (anniv Guillaume). Nat correcte à la place, mais ce n'était pas le programme."},
+    {"day": "Dim 28", "planned": "SL course 2h05 Z2 + Muscu haut", "done": "Course 12 km à 4'58/km FC170 max184 charge204 TE4.2", "status": "partial", "note": "SL longue redevenue un tempo court d'1h (tu détestes les SL). Grosse séance quali, mais pas le volume d'endurance. Muscu haut sautée (ciné Interstellar)."},
+    {"day": "Lun 29", "planned": "Footing Z2 55 + strides + Muscu haut", "done": "Footing 12 km à 5'24/km FC153 + Muscu 58 min", "status": "ok", "note": "Journée bien tenue : footing Z2 propre le matin + muscu le soir. La meilleure exécution de la semaine."},
+    {"day": "Mar 30", "planned": "Vélo endurance Z2 2h", "done": "Vélo 71 km 2h29 FC154 charge229", "status": "ok", "note": "Grosse sortie vélo Z2, charge 229. Le pilier vélo qui manquait la semaine dernière est de retour."},
+    {"day": "Mer 01", "planned": "Footing Z2 55 + strides (mat) + Vélo VO2max 5x5 (soir)", "done": "Vélo VO2max 36 km 1h12 FC160 max177 charge159", "status": "partial", "note": "VO2max vélo fait et bien tapé. Footing du matin sauté. Surtout : nuit à 4h18 (RDV + date le soir) qui a écrasé la readiness."},
+    {"day": "Jeu 02", "planned": "Course SEUIL 5x6 min (CLÉ)", "done": "Prévu ce soir", "status": "partial", "note": "Ta question du jour. Verdict fraîcheur détaillé dans le chat : readiness 34, FC repos +5, gros volume derrière = pas des jambes fraîches pour une quali clé."}
   ],
   "highlights": [
-    {"title": "Le tempo de dimanche", "punch": "12 km à 4'58/km, FC moy 170 (max 184), charge 204, TE aéro 4.2. Ta plus grosse séance. Prévue en SL easy, finie en quali - bonne intensité, mais ce n'est pas du volume d'endurance."},
-    {"title": "Récup au vert toute la semaine", "punch": "HRV BALANCED 7 jours sur 7, sommeil moyen 82, FC repos 45. Readiness montée à 75 puis 83 le 25-26 : le corps était dispo et frais. Ce n'est pas la fatigue qui a fait sauter les séances, c'est le planning."},
-    {"title": "Vélo et muscu à zéro", "punch": "Les deux vélos (seuil 4x8 + long 110 km) et les deux muscus sautés. Aucun kilomètre de vélo cette semaine alors que c'est un pilier de ta prépa Ironman. Le gros trou à combler dès cette semaine."}
+    {"title": "Le vélo est revenu", "punch": "71 km Z2 (charge 229) mardi + VO2max 5x5 mercredi (charge 159). Le trou vélo de la semaine dernière est comblé : c'est ton pilier Ironman, content de le revoir à ce niveau."},
+    {"title": "Charge 7j à 917 = productif", "punch": "6 séances, tous sports confondus, charge cumulée 917. Tu es enfin dans la zone 'productif' que tu réclamais, pas le maintien. Le volume est là."},
+    {"title": "La nuit à 4h18 a tout plombé", "punch": "Nuit du 30 au 01 : 4h18 de sommeil, score 55 (RDV + date le soir). Readiness enchaînée 10 → 10 → 34. Ce n'est pas l'entraînement qui t'a mis dans le trou, c'est le manque de sommeil sur une grosse charge."}
   ],
-  "to_remember": "Semaine de maintien, et surtout vélo + muscu à zéro. Pas un drame vu les events + la canicule, mais les leviers qui te font vraiment progresser (vélo long + quali seuil course) sont précisément ceux qui ont sauté. À ne pas répéter deux semaines de suite.",
-  "risk_level": "ok",
-  "risk_text": "Aucun signe de surmenage, c'est l'inverse : readiness haute (75-83) en milieu de semaine, HRV balanced partout, FC repos basse à 45. Le vrai risque ici, c'est de perdre le fil sur le vélo, pas de te cramer. Tu peux pousser cette semaine.",
-  "next_week": "Nat bloquée (piscines fermées) : on bascule ces créneaux sur le vélo - ça tombe bien, c'était le trou. Demain matin = vélo. Priorités : 1 vélo long week-end, 1 vélo fractionné, et récupérer la quali seuil course ratée jeudi. Nouvel objectif calé : 10 km d'Arras le 30 août. Et croix sur les entraînements du 8 au 16 août (vacances)."
+  "to_remember": "Semaine solide et productive, le vélo est de retour et la charge grimpe. Mais tu attaques la quali seuil de ce soir en récup incomplète : readiness 34 (sortie de trou), FC repos à 49 (+5 vs baseline 44) deux jours de suite. Le moteur est dispo, le réservoir pas plein.",
+  "risk_level": "warn",
+  "risk_text": "Pas de surmenage installé (HRV toujours BALANCED, stress bas, Body Battery rechargée à 85 ce matin), mais signaux de fatigue aiguë : readiness 34, FC repos +5 sur 2 jours, HRV hebdo en glissement doux (66 → 61). Le risque n'est pas de te blesser en une séance, c'est de saloper une quali clé sur des jambes fatiguées et de creuser avant le vélo long de samedi. Prudence sur l'intensité ce soir, pas sur le volume de la semaine.",
+  "next_week": "Ce soir : seuil 5x6 en auto-régulation (voir chat) - tu tapes après un bon échauffement et la 2e rep décide, sinon 4x6. Ven 03 footing récup. Sam 04 vélo long 100-120 + muscu jambes. Puis semaine canicule annoncée (07-06 à 07-12) : séances tôt le matin, seuil réduit à 4x6, prudence chaleur. Nat toujours bloquée (piscines). Croix sur le 8-16 août (vacances)."
 }
